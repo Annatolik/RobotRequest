@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
+import { Body, Controller, Post, Get, Request, UseGuards } from '@nestjs/common';
 import { RobotRequestService } from './robot-request.service';
 import { RobotRequest } from './schemas/robot-request.schemas';
 import { LocalAuthGuard } from 'src/user/local-auth.guard';
@@ -15,10 +15,11 @@ export class RobotRequestController {
     @UseGuards(LocalAuthGuard)
     @Post()
     async createRobotRequest(
-        @Request() req,
         @Body() robotRequest: RobotRequest,
+        @Request() req,
     ): Promise<RobotRequest> {
         const operatorId = req.user.operatorId;
+
 
         if (robotRequest.command === 'Move to the coordinate') {
             const isEngineOn = this.robotRequestService.checkEngineStatus(); 
@@ -28,7 +29,7 @@ export class RobotRequestController {
             }
         } else if(robotRequest.command === 'Turn off the engine'){
             this.robotRequestService.turnEngineOff();
-        }else if(robotRequest.command === 'Start the engine'){
+        } else if(robotRequest.command === 'Start the engine'){
             this.robotRequestService.turnEngineOn();
         }
 
@@ -37,3 +38,4 @@ export class RobotRequestController {
         return this.robotRequestService.create(robotRequest);
     }
 }
+
